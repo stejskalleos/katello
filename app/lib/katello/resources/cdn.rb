@@ -66,7 +66,7 @@ module Katello
           # Run the following command in rails console to figure out other
           # valid constants in other ruby versions
           # "OpenSSL::SSL::SSLContext::METHODS"
-          net.ssl_version = SETTINGS[:katello][:cdn_ssl_version] if SETTINGS[:katello].key?(:cdn_ssl_version)
+          net.ssl_version = Setting[:cdn_ssl_version] if Setting[:cdn_ssl_version]
 
           if (@options[:verify_ssl] == false) || (@options[:verify_ssl] == OpenSSL::SSL::VERIFY_NONE)
             net.verify_mode = OpenSSL::SSL::VERIFY_NONE

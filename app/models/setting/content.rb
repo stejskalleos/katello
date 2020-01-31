@@ -14,6 +14,7 @@ class Setting::Content < Setting
     download_policies = proc { hashify_parameters(::Runcible::Models::YumImporter::DOWNLOAD_POLICIES) }
     proxy_download_policies = proc { hashify_parameters(::SmartProxy::DOWNLOAD_POLICIES) }
     dependency_solving_options = proc { hashify_parameters(['conservative', 'greedy']) }
+    cdn_ssl_versions = proc { hashify_parameters(['SSLv23', 'TLSv1']) }
     http_proxy_select = [{
       name: _("HTTP Proxies"),
       class: 'HttpProxy',
@@ -28,6 +29,9 @@ class Setting::Content < Setting
                       nil,
                       collection: proc { http_proxy_select }, include_blank: N_("no global default")
               ),
+      self.set('cdn_ssl_version', N_("SSL version used to communicate with the CDN"),
+               nil, N_('SSL version used to communicate with the CDN'), nil,
+               :collection => cdn_ssl_versions),
       self.set('katello_default_provision', N_("Default provisioning template for Operating Systems created from synced content"),
                'Kickstart default', N_('Default synced OS provisioning template'),
                nil, :collection => proc { katello_template_setting_values("provision") }
@@ -141,7 +145,7 @@ class Setting::Content < Setting
 
   def self.load_defaults
     BLANK_ATTRS.concat %w(register_hostname_fact default_location_subscribed_hosts
-                          default_location_puppet_content content_default_http_proxy host_dmi_uuid_duplicates)
+                          default_location_puppet_content content_default_http_proxy host_dmi_uuid_duplicates cdn_ssl_version)
     super
   end
 
