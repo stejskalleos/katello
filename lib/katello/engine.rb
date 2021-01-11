@@ -185,7 +185,8 @@ module Katello
       ::SmartProxiesController.include Katello::Concerns::SmartProxiesControllerExtensions
       ::Foreman::Plugin.fact_importer_registry.register(Katello::RhsmFactName::FACT_TYPE, Katello::RhsmFactImporter)
       ::FactParser.register_fact_parser(Katello::RhsmFactName::FACT_TYPE, Katello::RhsmFactParser)
-      ::RegistrationCommandsController.include Katello::Concerns::RegistrationCommandsControllerExtensions
+      ::RegistrationCommandsController.prepend Katello::Concerns::RegistrationCommandsControllerExtensions
+
 
       #Helper Extensions
       ::SmartProxiesController.class_eval do
@@ -226,7 +227,7 @@ module Katello
       ::Api::V2::HostgroupsController.include Katello::Concerns::Api::V2::HostgroupsControllerExtensions
       ::Api::V2::SmartProxiesController.include Katello::Concerns::Api::V2::SmartProxiesControllerExtensions
       ::Api::V2::RegistrationController.prepend Katello::Concerns::Api::V2::RegistrationControllerExtensions
-      ::Api::V2::RegistrationCommandsController.include Katello::Concerns::Api::V2::RegistrationCommandsControllerExtensions
+      ::Api::V2::RegistrationCommandsController.prepend Katello::Concerns::Api::V2::RegistrationCommandsControllerExtensions
 
       ::HostsController.class_eval do
         helper Katello::Concerns::HostsAndHostgroupsHelperExtensions

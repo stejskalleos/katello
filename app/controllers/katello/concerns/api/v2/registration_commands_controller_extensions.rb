@@ -20,6 +20,7 @@ module Katello
             before_action :format_activation_key
           end
 
+          # TODO: Still valid?
           def format_activation_key
             return if registration_params[:activation_key].blank?
             registration_params[:activation_key] = registration_params[:activation_key].split(',').map(&:strip).reject(&:blank?).join(',')
