@@ -281,13 +281,8 @@ Foreman::Plugin.register :katello do
   extend_rabl_template 'api/v2/smart_proxies/main', 'katello/api/v2/smart_proxies/pulp_info'
   extend_rabl_template 'api/v2/hosts/show', 'katello/api/v2/hosts/host_collections'
 
-  # Extend Global Registration endpoint
+  # Extend Global Registration
   extend_allowed_registration_vars :activation_key
-
-  # Extend Global Registration UI
-  extend_page 'registration_commands/_form' do |cx|
-    cx.add_pagelet :global_registration, name: N_('Katello'), partial: 'foreman/hosts/registration_commands', priority: 100, id: 'katello'
-  end
 
   extend_page "smart_proxies/show" do |cx|
     cx.add_pagelet :details_content,
