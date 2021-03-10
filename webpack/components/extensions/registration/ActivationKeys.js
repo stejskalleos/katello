@@ -10,38 +10,44 @@ import {
 
 import { HelpIcon } from '@patternfly/react-icons';
 import { translate as __ } from 'foremanReact/common/I18n';
+import { selectActivationKeys } from './RegistrationCommandsPageSelectors';
 
-const ActivationKeys = ({ isLoading, pluginData, pluginValues, onChange }) => {
+const ActivationKeys = ({ isLoading, pluginValues, onChange }) => {
+  const activationKeys = useSelector(selectActivationKeys);
   const [isOpen, setIsOpen] = useState(false);
-  const [activationKeys, setActivationKeys] = useState(pluginData?.activationKeys || []);
-  const selectedKeys = pluginValues?.activationKeys || [];
+  const selectedKeys = (pluginValues?.activationKeys || '').split(',').filter(ak => ak);
+  const help = (<div>
+    { __('Activation key(s) for Subscription Manager.')}
+                </div>);
 
-  const onToggle = () => {setIsOpen(!isOpen)}
-
+  const updatePluginValues = (activationKeys) => {
+    onChange({ activationKeys: activationKeys.join(',') });
+  };
   const onSelect = (_e, value) => {
-    if(selectedKeys.find((key => key === value))){
-      const newKeys = selectedKeys.filter(sk => sk !== value);
-      onChange({activationKeys: newKeys})
-    }else{
-      onChange({activationKeys: [...selectedKeys, value]})
+    if (selectedKeys.find((key => key === value))) {
+      updatePluginValues(selectedKeys.filter(sk => sk !== value));
+    } else {
+      updatePluginValues([...selectedKeys, value]);
     }
-  }
-
-  const onCreateOption = newValue => {
-    setActivationKeys([...activationKeys, { value: newValue}])
-    onChange({activationKeys: [...selectedKeys, newValue]})
   };
 
-  const onClear = () => {  onChange({activationKeys: []})   }
+  const onCreateOption = (newValue) => {
+    updatePluginValues([...selectedKeys, newValue]);
+  };
+
+  const onClear = () => { updatePluginValues([]); };
+  const onToggle = () => { setIsOpen(!isOpen); };
 
   return (
     <FormGroup
       label={__('Activation Keys')}
-      fieldId='reg_ak'
+      fieldId="reg_ak"
       labelIcon={
-        <Popover bodyContent={<div>TODO</div>}>
+        <Popover
+          bodyContent={help}
+        >
           <button
-            className='pf-c-form__group-label-help'
+            className="pf-c-form__group-label-help"
             onClick={e => e.preventDefault()}
           >
             <HelpIcon noVerticalAlign />

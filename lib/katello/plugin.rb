@@ -282,7 +282,8 @@ Foreman::Plugin.register :katello do
   extend_rabl_template 'api/v2/hosts/show', 'katello/api/v2/hosts/host_collections'
 
   # Extend Global Registration
-  extend_allowed_registration_vars :activation_key
+  extend_allowed_registration_vars :activation_keys
+  extend_allowed_registration_vars :force
 
   extend_page "smart_proxies/show" do |cx|
     cx.add_pagelet :details_content,
