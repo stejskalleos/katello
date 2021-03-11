@@ -9,19 +9,23 @@ import {
 } from '@patternfly/react-core';
 
 import { HelpIcon } from '@patternfly/react-icons';
-import { translate as __ } from 'foremanReact/common/I18n';
-import { selectActivationKeys } from './RegistrationCommandsPageSelectors';
+import { sprintf, translate as __ } from 'foremanReact/common/I18n';
+import { selectActivationKeys, selectHostGroupActivationKeys } from './RegistrationCommandsPageSelectors';
 
-const ActivationKeys = ({ isLoading, pluginValues, onChange }) => {
+const ActivationKeys = ({
+  organizationId, pluginValues, onChange, isLoading,
+}) => {
   const activationKeys = useSelector(selectActivationKeys);
+  const hostGroupActivationKeys = useSelector(selectHostGroupActivationKeys);
+
   const [isOpen, setIsOpen] = useState(false);
   const selectedKeys = (pluginValues?.activationKeys || '').split(',').filter(ak => ak);
   const help = (<div>
     { __('Activation key(s) for Subscription Manager.')}
                 </div>);
 
-  const updatePluginValues = (activationKeys) => {
-    onChange({ activationKeys: activationKeys.join(',') });
+  const updatePluginValues = (keys) => {
+    onChange({ activationKeys: keys.join(',') });
   };
   const onSelect = (_e, value) => {
     if (selectedKeys.find((key => key === value))) {
@@ -31,17 +35,19 @@ const ActivationKeys = ({ isLoading, pluginValues, onChange }) => {
     }
   };
 
-  const onCreateOption = (newValue) => {
-    updatePluginValues([...selectedKeys, newValue]);
-  };
-
   const onClear = () => { updatePluginValues([]); };
   const onToggle = () => { setIsOpen(!isOpen); };
+
+  // Delete all selected & created keys when organization is changed
+  useEffect(() => {
+    onChange({ activationKeys: '' });
+  }, [organizationId]);
 
   return (
     <FormGroup
       label={__('Activation Keys')}
       fieldId="reg_ak"
+      helperText={hostGroupActivationKeys && sprintf('From host group: %s', hostGroupActivationKeys)}
       labelIcon={
         <Popover
           bodyContent={help}
@@ -54,6 +60,7 @@ const ActivationKeys = ({ isLoading, pluginValues, onChange }) => {
           </button>
         </Popover>
       }
+      isHelperTextBeforeField
     >
       <Select
         variant={SelectVariant.typeaheadMulti}
@@ -62,14 +69,12 @@ const ActivationKeys = ({ isLoading, pluginValues, onChange }) => {
         onClear={onClear}
         selections={selectedKeys}
         isOpen={isOpen}
-        onCreateOption={onCreateOption}
         isDisabled={isLoading}
-        isCreatable
       >
-        {activationKeys.map((ack, i) => (
+        {activationKeys.map((ack) => (
           <SelectOption
-            key={i}
             value={ack.name}
+            description={(ack?.lce ? ack.lce : __('No environment'))}
           />
         ))}
       </Select>

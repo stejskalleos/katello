@@ -9,3 +9,6 @@ import {
 export const selectActivationKeys = state =>
   selectAPIResponse(state, REGISTRATION_COMMANDS_DATA).pluginData?.activationKeys || [];
 
+export const selectHostGroupActivationKeys = state =>
+  selectAPIResponse(state, REGISTRATION_COMMANDS_DATA).pluginData?.hostGroupActivationKeys;
+

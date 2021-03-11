@@ -6,9 +6,7 @@ import { translate as __ } from 'foremanReact/common/I18n';
 
 const Force = ({ isLoading, pluginValues, onChange }) => {
   const force = pluginValues?.force === undefined ? false : pluginValues?.force;
-  const help = (<div>
-    { __('Remove any `katello-ca-consumer` rpms before registration and run subscription-manager with `--force` argument.')}
-                </div>);
+  const help = <div>{ __('Remove any `katello-ca-consumer` rpms before registration and run subscription-manager with `--force` argument.')}</div>;
 
   return (
     <FormGroup fieldId="reg_katello_force">
