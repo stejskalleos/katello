@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { useState, useEffect } from 'react';
 import PropTypes from 'prop-types';
 import { noop } from 'foremanReact/common/helpers';
 
@@ -16,16 +16,24 @@ const RegistrationCommands = ({
   isLoading,
 }) => {
   const activationKeys = pluginData?.activationKeys;
+  const selectedKeys = pluginValues?.activationKeys || [];
   const hostGroupActivationKeys = pluginData?.hostGroupActivationKeys;
   const lifeCycleEnvironments = pluginData?.lifeCycleEnvironments;
   const hostGroupEnvironment = pluginData?.hostGroupEnvironment;
 
+  // Delete all selected keys when organization is changed,
+  // some of them can be outside of the organization scope
+  useEffect(() => {
+    onChange({ activationKeys: [] });
+  }, [organizationId]);
+
   return (
     <>
       <ActivationKeys
-        activationKeys={activationKeys}
-        hostGroupActivationKeys={hostGroupActivationKeys}
         organizationId={organizationId}
+        activationKeys={activationKeys}
+        selectedKeys={selectedKeys}
+        hostGroupActivationKeys={hostGroupActivationKeys}
         hostGroupId={hostGroupId}
         pluginValues={pluginValues}
         onChange={onChange}

@@ -13,6 +13,7 @@ import { validateAKField, hasValidValue } from '../RegistrationCommandsPageHelpe
 
 const ActivationKeys = ({
   activationKeys,
+  selectedKeys,
   hostGroupActivationKeys,
   organizationId,
   hostGroupId,
@@ -22,10 +23,9 @@ const ActivationKeys = ({
   handleInvalidField,
 }) => {
   const [isOpen, setIsOpen] = useState(false);
-  const selectedKeys = (pluginValues?.activationKeys || '').split(',').filter(ak => ak);
 
   const updatePluginValues = (keys) => {
-    onChange({ activationKeys: keys.join(',') });
+    onChange({ activationKeys: keys });
     handleInvalidField('Activation Keys', hasValidValue(hostGroupId, pluginValues?.activationKeys, hostGroupActivationKeys));
   };
 
@@ -36,14 +36,6 @@ const ActivationKeys = ({
       updatePluginValues([...selectedKeys, value]);
     }
   };
-
-  // TODO: Doesn't work with organizationID (don't know why)
-  // Delete all selected keys when organization is changed,
-  // some of them can be outside of the organization scope
-  useEffect(() => {
-    handleInvalidField('Activation Keys', false);
-    onChange({ activationKeys: undefined });
-  }, [activationKeys]);
 
   // Validate field when hostgroup is changed (host group may have some keys)
   useEffect(() => {
