@@ -29,7 +29,6 @@ module Katello
       def registration_args
         args = super
         args['activation_keys'] = args['activation_keys'].join(',') if args['activation_keys']
-        binding.pry
         args
       end
     end

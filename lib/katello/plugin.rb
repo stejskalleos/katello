@@ -284,6 +284,7 @@ Foreman::Plugin.register :katello do
   # Extend Global Registration
   extend_allowed_registration_vars :activation_keys
   extend_allowed_registration_vars :force
+  extend_allowed_registration_vars :ignore_subman_errors
 
   extend_page "smart_proxies/show" do |cx|
     cx.add_pagelet :details_content,

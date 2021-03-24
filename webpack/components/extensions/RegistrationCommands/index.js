@@ -4,6 +4,7 @@ import { noop } from 'foremanReact/common/helpers';
 
 import ActivationKeys from './fields/ActivationKeys';
 import LifeCycleEnvironment from './fields/LifeCycleEnvironment';
+import IgnoreSubmanErrors from './fields/IgnoreSubmanErrors';
 import Force from './fields/Force';
 
 const RegistrationCommands = ({
@@ -31,9 +32,9 @@ const RegistrationCommands = ({
     <>
       <ActivationKeys
         organizationId={organizationId}
-        activationKeys={activationKeys}
-        selectedKeys={selectedKeys}
-        hostGroupActivationKeys={hostGroupActivationKeys}
+        activationKeys={pluginData?.activationKeys}
+        selectedKeys={(pluginValues?.activationKeys || [])}
+        hostGroupActivationKeys={pluginData?.hostGroupActivationKeys}
         hostGroupId={hostGroupId}
         pluginValues={pluginValues}
         onChange={onChange}
@@ -43,8 +44,14 @@ const RegistrationCommands = ({
       <LifeCycleEnvironment
         organizationId={organizationId}
         pluginValues={pluginValues}
-        lifeCycleEnvironments={lifeCycleEnvironments}
-        hostGroupEnvironment={hostGroupEnvironment}
+        lifeCycleEnvironments={pluginData?.lifeCycleEnvironments}
+        hostGroupEnvironment={pluginData?.hostGroupEnvironment}
+        onChange={onChange}
+        isLoading={isLoading}
+      />
+      <IgnoreSubmanErrors
+        value={pluginValues?.ignoreSubmanErrors}
+        pluginValues={pluginValues}
         onChange={onChange}
         isLoading={isLoading}
       />
