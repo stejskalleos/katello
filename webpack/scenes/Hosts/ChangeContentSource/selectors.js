@@ -4,7 +4,7 @@ import {
   selectAPIError,
 } from 'foremanReact/redux/API/APISelectors';
 
-import { CHANGE_CONTENT_SOURCE_DATA, CHANGE_CONTENT_SOURCE, CHANGE_CONTENT_SOURCE_VIEWS } from './constants';
+import { CHANGE_CONTENT_SOURCE_DATA, CHANGE_CONTENT_SOURCE_CAPSULE, CHANGE_CONTENT_SOURCE, CHANGE_CONTENT_SOURCE_VIEWS } from './constants';
 
 // API statuses
 export const selectApiDataStatus = state =>
@@ -19,17 +19,17 @@ export const selectApiChangeContentStatus = state =>
 export const selectError = state => selectAPIError(state, CHANGE_CONTENT_SOURCE);
 
 // Selectors
-export const selectContentHostsIds = state =>
-  selectAPIResponse(state, CHANGE_CONTENT_SOURCE_DATA).content_hosts_ids || [];
+export const selectHosts = state =>
+  selectAPIResponse(state, CHANGE_CONTENT_SOURCE_DATA).hosts || [];
 
-export const selectHostsWithoutContent = state =>
-  selectAPIResponse(state, CHANGE_CONTENT_SOURCE_DATA).hosts_without_content || [];
+export const selectIgnoredHosts = state =>
+  selectAPIResponse(state, CHANGE_CONTENT_SOURCE_DATA).ignored_hosts || [];
 
 export const selectEnvironments = state =>
-  selectAPIResponse(state, CHANGE_CONTENT_SOURCE_DATA).environments || [];
+  selectAPIResponse(state, CHANGE_CONTENT_SOURCE_CAPSULE).lifecycle_environments || [];
 
-export const selectContentSources = state =>
-  selectAPIResponse(state, CHANGE_CONTENT_SOURCE_DATA).content_sources || [];
+export const selectCapsules = state =>
+  selectAPIResponse(state, CHANGE_CONTENT_SOURCE_DATA).capsules || [];
 
 export const selectJobInvocationPath = state =>
   selectAPIResponse(state, CHANGE_CONTENT_SOURCE_DATA).job_invocation_path;

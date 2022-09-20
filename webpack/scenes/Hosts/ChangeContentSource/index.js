@@ -1,26 +1,32 @@
 import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 
-import { Alert, Grid, GridItem, List, ListItem } from '@patternfly/react-core';
+import { Alert, Grid, GridItem } from '@patternfly/react-core';
 
 import { translate as __ } from 'foremanReact/common/I18n';
 import { STATUS } from 'foremanReact/constants';
-import { foremanUrl } from 'foremanReact/common/helpers';
 
 import { selectApiDataStatus,
   selectApiContentViewStatus,
   selectApiChangeContentStatus,
-  selectContentHostsIds,
-  selectHostsWithoutContent,
+  selectHosts,
+  selectIgnoredHosts,
   selectEnvironments,
-  selectContentSources,
+  selectCapsules,
   selectJobInvocationPath,
   selectContentViews,
   selectTemplate } from './selectors';
+
 import { getHostIds, formIsLoading } from './helpers';
-import { getFormData, changeContentSource, getContentViews } from './actions';
+import {
+  getFormData,
+  getCapsule,
+  changeContentSource,
+  getContentViews,
+} from './actions';
 import ContentSourceForm from './components/ContentSourceForm';
 import ContentSourceTemplate from './components/ContentSourceTemplate';
+import Hosts from './components/Hosts';
 import './styles.scss';
 
 const ChangeContentSourcePage = () => {
@@ -32,52 +38,43 @@ const ChangeContentSourcePage = () => {
 
   const isLoading = formIsLoading(apiDataStatus, apiContentViewStatus, apiChangeStatus);
 
-  const contentHostsIds = useSelector(selectContentHostsIds);
-  const hostsWithoutContent = useSelector(selectHostsWithoutContent);
+  const hosts = useSelector(selectHosts);
+  const ignoredHosts = useSelector(selectIgnoredHosts);
   const environments = useSelector(selectEnvironments);
-  const contentSources = useSelector(selectContentSources);
+  const capsules = useSelector(selectCapsules);
   const jobInvocationPath = useSelector(selectJobInvocationPath);
 
   const template = useSelector(selectTemplate);
   const contentViews = useSelector(selectContentViews);
 
-  const [environmentId, setEnvironmentId] = useState();
-  const [contentViewId, setContentViewId] = useState();
-  const [contentSourceId, setContentSourceId] = useState();
+  const [capsuleId, setCapsuleId] = useState('');
+  const [environmentId, setEnvironmentId] = useState('');
+  const [contentViewId, setContentViewId] = useState('');
 
   const handleSubmit = (e) => {
     e.preventDefault();
 
-    dispatch(changeContentSource(environmentId, contentViewId, contentSourceId, contentHostsIds));
+    dispatch(changeContentSource(environmentId, contentViewId, capsuleId, hosts.map(h => h.id)));
+  };
+
+  const handleCapsule = (id) => {
+    setCapsuleId(id);
+    setEnvironmentId('');
+    setContentViewId('');
+
+    if (id) {
+      dispatch(getCapsule(id));
+    }
   };
 
   const handleEnvironment = (envId) => {
+    setEnvironmentId(envId);
+    setContentViewId('');
+
     if (envId) {
       dispatch(getContentViews(envId));
     }
-
-    setEnvironmentId(envId);
-    setContentViewId('');
   };
-
-  const IgnoredHostsAlert = () => (
-    <Alert
-      variant="warning"
-      title={__('Some hosts are ignored!')}
-      className="cs_alert"
-      isExpandable
-    >
-      <p>
-        { __('The following hosts are not registered as Content Hosts, so they will be ignored:') }
-      </p>
-      { hostsWithoutContent.map(name => (
-        <List>
-          <ListItem>
-            <a href={foremanUrl(`/hosts/${name}`)}>{name}</a>
-          </ListItem>
-        </List>))}
-    </Alert>);
-
   useEffect(() => {
     dispatch(getFormData());
   }, [dispatch]);
@@ -90,7 +87,6 @@ const ChangeContentSourcePage = () => {
             variant="danger"
             title={__('No hosts with content source found!')}
           />
-          { hostsWithoutContent.length > 0 && <IgnoredHostsAlert /> }
         </GridItem>
       </Grid>);
   }
@@ -99,9 +95,11 @@ const ChangeContentSourcePage = () => {
     <Grid className="margin-40">
       <GridItem span={7}>
         <h1>{__('Change host content source')}</h1>
-
-        { hostsWithoutContent.length > 0 && <IgnoredHostsAlert /> }
       </GridItem>
+      <Hosts
+        hosts={hosts}
+        ignoredHosts={ignoredHosts}
+      />
 
       <ContentSourceForm
         handleSubmit={handleSubmit}
@@ -111,10 +109,11 @@ const ChangeContentSourcePage = () => {
         contentViews={contentViews}
         handleContentView={setContentViewId}
         contentViewId={contentViewId}
-        contentSources={contentSources}
-        contentSourceId={contentSourceId}
-        handleContentSource={setContentSourceId}
-        contentHostsIds={contentHostsIds}
+        capsules={capsules}
+        capsuleId={capsuleId}
+        handleCapsule={handleCapsule}
+        hosts={hosts}
+        ignoredHosts={ignoredHosts}
         isLoading={isLoading}
       />
       { apiChangeStatus === STATUS.RESOLVED &&

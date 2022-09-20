@@ -3,9 +3,12 @@ import { foremanUrl } from 'foremanReact/common/helpers';
 import { get, post, put } from 'foremanReact/redux/API';
 import { translate as __ } from 'foremanReact/common/I18n';
 
-import { CHANGE_CONTENT_SOURCE_DATA,
+import {
+  CHANGE_CONTENT_SOURCE_DATA,
+  CHANGE_CONTENT_SOURCE_CAPSULE,
   CHANGE_CONTENT_SOURCE,
-  CHANGE_CONTENT_SOURCE_VIEWS } from './constants';
+  CHANGE_CONTENT_SOURCE_VIEWS,
+} from './constants';
 
 import { getHostIds } from './helpers';
 
@@ -17,18 +20,25 @@ export const getFormData = () =>
     errorToast: () => __('Something went wrong while getting the data. See the logs for more information'),
   });
 
-export const changeContentSource = (environmentId, contentViewId, contentSourceId, hostIds) =>
+export const changeContentSource = (environmentId, contentViewId, capsuleId, hostIds) =>
   put({
     key: CHANGE_CONTENT_SOURCE,
     url: foremanUrl('/api/v2/hosts/bulk/change_content_source'),
     params: {
       environment_id: environmentId,
       content_view_id: contentViewId,
-      content_source_id: contentSourceId,
+      content_source_id: capsuleId,
       host_ids: hostIds,
     },
     successToast: () => __('Content source successfully updated.'),
     errorToast: () => __('Something went wrong while updating the content source. See the logs for more information'),
+  });
+
+export const getCapsule = id =>
+  get({
+    key: CHANGE_CONTENT_SOURCE_CAPSULE,
+    url: foremanUrl(`/katello/api/capsules/${id}`),
+    errorToast: () => __('Something went wrong while loading the capsules. See the logs for more information'),
   });
 
 export const getContentViews = environmentId =>
