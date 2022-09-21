@@ -10,13 +10,13 @@ import {
   CHANGE_CONTENT_SOURCE_VIEWS,
 } from './constants';
 
-import { getHostIds } from './helpers';
+import { getHostIds, getSearchParam } from './helpers';
 
 export const getFormData = () =>
   post({
     key: CHANGE_CONTENT_SOURCE_DATA,
     url: foremanUrl('/change_host_content_source/data'),
-    params: { host_ids: getHostIds() },
+    params: { host_ids: getHostIds(), search: getSearchParam() },
     errorToast: () => __('Something went wrong while getting the data. See the logs for more information'),
   });
 

@@ -72,7 +72,7 @@ module Katello
         end
 
         def change_content_source_data
-          hosts = ::Host.where(id: params[:host_ids])
+          hosts = params[:search] ? ::Host.search_for(params[:search]) : ::Host.where(id: params[:host_ids])
 
           content_hosts = []
           ignored_hosts = []

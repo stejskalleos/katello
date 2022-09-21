@@ -15,6 +15,11 @@ export const getHostIds = () => {
   return [];
 };
 
+export const getSearchParam = () => {
+  const url = new URL(window.location);
+  return(url.searchParams.get('search'))
+}
+
 export const formIsLoading = (data, contentView, change) => (
   data === STATUS.PENDING ||
   contentView === STATUS.PENDING ||

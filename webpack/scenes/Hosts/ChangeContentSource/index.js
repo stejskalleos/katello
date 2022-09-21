@@ -79,6 +79,7 @@ const ChangeContentSourcePage = () => {
     dispatch(getFormData());
   }, [dispatch]);
 
+  // TODO: What to do if search param is present
   if (getHostIds().length === 0) {
     return (
       <Grid className="margin-40">
