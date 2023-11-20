@@ -226,13 +226,13 @@ angular.module('Bastion.content-hosts').controller('ContentHostDetailsController
             if (host.unregisterDelete) {
                 host.$delete(function () {
                     host.deleting = false;
-                    Notification.setSuccessMessage(translate('Host %s has been deleted.').replace('%s', host.name));
+                    Notification.setSuccessMessage(translate('Host %s has been deleted.').replace('%s', host.display_name));
                     $scope.transitionTo('content-hosts');
                 }, errorHandler);
             } else {
                 HostSubscription.delete({id: host.id}, function () {
                     host.deleting = false;
-                    Notification.setSuccessMessage(translate('Host %s has been unregistered.').replace('%s', host.name));
+                    Notification.setSuccessMessage(translate('Host %s has been unregistered.').replace('%s', host.display_name));
                     $scope.transitionTo('content-hosts');
                 }, errorHandler);
             }
